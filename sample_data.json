@@ -1,0 +1,72 @@
+[
+  {
+    "dish": "Eggs Benedict",
+    "price": 54.99,
+    "category": "Breakfast"
+  },
+  {
+    "dish": "Waffle Fresh Berries",
+    "price": 53.99,
+    "category": "Breakfast"
+  },
+  {
+    "dish": "Porridge with Cherries",
+    "price": 50.99,
+    "category": "Breakfast"
+  },
+  {
+    "dish": "Poached Egg Sandwiches",
+    "price": 55.99,
+    "category": "Breakfast"
+  },
+  {
+    "dish": "Banana and Blackberry Toast",
+    "price": 54.99,
+    "category": "Breakfast"
+  },
+  {
+    "dish": "Lasagna",
+    "price": 54.99,
+    "category": "Main"
+  },
+  {
+    "dish": "Beef Stew",
+    "price": 51.0,
+    "category": "Main"
+  },
+  {
+    "dish": "Salmon Steak",
+    "price": 50.99,
+    "category": "Main"
+  },
+  {
+    "dish": "Spaghetti",
+    "price": 96.99,
+    "category": "Main"
+  },
+  {
+    "dish": "Poke Salad",
+    "price": 54.99,
+    "category": "Salad"
+  },
+  {
+    "dish": "Salmon Salad",
+    "price": 57.0,
+    "category": "Salad"
+  },
+  {
+    "dish": "Diet Salad",
+    "price": 50.99,
+    "category": "Salad"
+  },
+  {
+    "dish": "Avocado Tuna Salad",
+    "price": 56.99,
+    "category": "Salad"
+  },
+  {
+    "dish": "Organic Ham Salad",
+    "price": 54.99,
+    "category": "Salad"
+  }
+]
