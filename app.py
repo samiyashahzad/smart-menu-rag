@@ -2,7 +2,7 @@ import streamlit as st
 import json
 import difflib
 
-# 1. Load Data (Cached so it doesn't reload on every click)
+
 @st.cache_data
 def load_data():
     with open("sample_data.json", "r") as f:
@@ -10,50 +10,99 @@ def load_data():
 
 menu = load_data()
 
-# 2. The Logic Function (Reusing your "Brain")
+
 def find_dish(query, max_price=None):
-    query = query.lower()
+    query = query.lower().strip()
     matches = []
-    
+
+
+    if query in ["menu", "show menu", "list", "all", "show me the menu"]:
+        return [item for item in menu if float(item['price']) <= (max_price or 99999)]
+
+  
+    try:
+        budget_query = float(query)
+        # Return items cheaper than this number
+        return [item for item in menu if float(item['price']) <= budget_query]
+    except ValueError:
+        pass # Not a number? Continue to text search...
+
+
     for item in menu:
-        dish_name = item['dish']
-        # Clean price for math
-        try:
-            price_val = float(item['price'])
-        except:
-            price_val = 0.0
-            
-        # Logic A: Price Filter (If sidebar is used)
+        # Get all data fields safely
+        dish_name = item.get('dish', '').lower()
+        category = item.get('category', '').lower() # We check this now!
+        price = float(item.get('price', 0))
+
+        # Check Sidebar Slider (if used)
         if max_price is not None:
-            if price_val > max_price:
-                continue # Skip if too expensive
+            if price > max_price:
+                continue 
         
-        # Logic B: Text Search
-        # If query is empty, show everything (that fits budget)
-        if not query: 
+    
+        if query in dish_name:
             matches.append(item)
-            continue
             
-        # If query exists, check name match
-        if query in dish_name.lower():
+
+        elif query in category:
             matches.append(item)
-        elif difflib.SequenceMatcher(None, query, dish_name.lower()).ratio() > 0.6:
+            
+    
+        elif difflib.SequenceMatcher(None, query, dish_name).ratio() > 0.6:
             matches.append(item)
             
     return matches
 
-# --- UI LAYOUT ---
-st.title("🍔 Saqafat Menu AI")
+st.title("🍔 Digital  Menu AI")
 st.caption("Ask me about food or filter by price!")
 
-# Sidebar for Budget
+
 with st.sidebar:
     st.header("💰 Wallet Filter")
     # A slider from 0 to 2000 rupees
     budget = st.slider("Max Budget (Rs.)", 0, 2000, 2000) 
     st.write(f"Showing items under: **{budget}**")
 
-# Chat History Setup
+st.markdown("### 🤖 Quick Options")
+col1, col2, col3 = st.columns(3)
+
+
+def handle_click(query_text):
+    # 1. Add User Message
+    st.session_state.messages.append({"role": "user", "content": query_text})
+    
+  
+
+    results = find_dish(query_text, max_price=budget)
+    
+    if results:
+       
+        if len(results) > 10: 
+             response = f"I found the whole menu ({len(results)} items) for you!\n\n"
+        else:
+             response = f"I found **{len(results)}** items under {budget}:\n\n"
+             
+        for item in results:
+            response += f"- **{item['dish']}**: {item['price']}\n"
+    else:
+        response = "Sorry, nothing found!"
+        
+
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    
+  
+    st.rerun()
+
+
+if col1.button("📜 Show Full Menu"):
+    handle_click("Show me the menu")
+
+if col2.button("🍳 Breakfast"):
+    handle_click("breakfast")
+
+if col3.button("💵 Cheap Eats (< 500)"):
+    handle_click("500")
+
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "assistant", "content": "Hi! What are you craving today?"}]
 
